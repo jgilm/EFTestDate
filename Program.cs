@@ -31,15 +31,22 @@ namespace EFTestDate
             Console.WriteLine("Starting...");
 
             var context = new TestContext();
+            context.Database.Migrate();
 
-            // Query against the int column
-            ExecuteQuery(context.MyTable.Where(t => t.Id == 1), 1);
+            // Query against the int column - control test
+            ExecuteQuery(
+                context.MyTable.Where(t => t.Id == 1)
+                , 1);
 
             // Query against DateTimeOffset column
-            ExecuteQuery(context.MyTable.Where(t => t.OffsetDate == new DateTime(2017, 1, 1)), 2);
+            ExecuteQuery(
+                context.MyTable.Where(t => t.OffsetDate == new DateTime(2017, 1, 1))
+                , 2);
 
             // Query against DateTime column
-            ExecuteQuery(context.MyTable.Where(t => t.RegularDate == new DateTime(2017, 1, 1)), 3);
+            ExecuteQuery(
+                context.MyTable.Where(t => t.RegularDate == new DateTime(2017, 1, 1))
+                , 3);
 
             Console.WriteLine("Finished.");
             Console.ReadKey();
@@ -50,13 +57,12 @@ namespace EFTestDate
             try
             {
                 var list = query.ToList();
-                Console.WriteLine($"- Test {testNumber} count: {list.Count}\r\n");
+                Console.WriteLine($"- Success test {testNumber} count: {list.Count}\r\n");
             }
             catch (PostgresException ex)
             {
-                Console.WriteLine($"Test {testNumber} Exception thrown for statement: \r\n\"{ex.Statement.ToString()}\r\n");
+                Console.WriteLine($"- Failure test {testNumber} Exception thrown for statement: \r\n\r\n{ex.Statement.ToString()}\r\n");
             }
         }
     }
-
 }
